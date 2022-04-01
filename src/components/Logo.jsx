@@ -13,10 +13,8 @@ export default function Logo(props){
 }
 
 const ImgContainer = styled.div`
-    width: ${props => props.width}px;
-    font-family: 'Playball', cursive;
+    width: ${props => props.width};
     margin: auto;
-    margin-top: 100px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -26,10 +24,11 @@ const ImgContainer = styled.div`
         width: 100%;
     }
     p {
+        font-family: 'Playball', cursive;
         font-weight: 400;
         font-size: 68.982px;
         line-height: 86px;
-        color: #126BA5;
+        color: var(--main-color);
         margin-bottom: 35px;
     }
 

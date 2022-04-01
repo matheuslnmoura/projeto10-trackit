@@ -1,11 +1,42 @@
 import styled from "styled-components"
+import { useContext } from "react";
+
+
 import "../assets/styles/style.css" //importing general CSS file
 
+import UserContext from "../context/UserContext"
+
 export default function Input(props){
-    const {type, placeholder} = props
+    const {type, id, placeholder, value} = props
+    const {userInfo, setUserInfo} = useContext(UserContext)
+    const {isSigningUp, email, name, image, password} = userInfo
+
     return(
         <InputsContainer>
-            <input type={type} placeholder = {placeholder} />
+            <input type={type} 
+            placeholder = {placeholder} 
+            id = {id} 
+            value = {value}
+            onChange={(event)=>{
+                switch(id){
+                    case "email":
+                        setUserInfo({...userInfo, email: event.target.value})
+                        break
+                    
+                    case "password":
+                        setUserInfo({...userInfo, password: event.target.value})
+                        break
+                                            
+                    case "name":
+                        setUserInfo({...userInfo, name: event.target.value})
+                        break
+                                            
+                    case "image":
+                        setUserInfo({...userInfo, image: event.target.value})
+                        break
+                }
+
+            }} />
         </InputsContainer>
     )
 }
@@ -30,5 +61,21 @@ const InputsContainer = styled.div`
     input:focus{
         outline: 2px solid var(--button-color);
     }
+
+    input::-webkit-input-placeholder { /* Edge */
+        padding-left: 11px;
+        color: #DBDBDB;
+    }
+
+    input:-ms-input-placeholder { /* Internet Explorer 10-11 */
+        padding-left: 11px;
+        color: #DBDBDB;
+    }
+
+    input::placeholder {
+        padding-left: 11px;
+        color: #DBDBDB;
+    }
+
 
 `

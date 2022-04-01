@@ -2,5 +2,11 @@
     box-sizing: border-box;
     --main-color: #126BA5;
     --button-color: #52B6FF;
+    --white-color: #FFF;
     font-family: 'Lexend Deca', sans-serif;
-}
+    scrollbar-width: none; /*FireFox*/
+}  
+  
+  *::-webkit-scrollbar { /* Works on Chrome, Edge, and Safari */
+    width: 0;
+  }
