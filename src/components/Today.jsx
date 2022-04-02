@@ -4,15 +4,14 @@ import { Link, useNavigate } from "react-router-dom"
 import axios from 'axios'
 import { ThreeDots } from  'react-loader-spinner'
 import dayjs from 'dayjs'
+import {BsCheckLg} from 'react-icons/bs'
 
+import ProgressContext from "../context/ProgressContext"
 import UserContext from "../context/UserContext"
-import "../assets/styles/style.css" //importing general CSS file
+import "../assets/styles/style.css"
 
-import Header from "./Header";
+import Header from "./Header"
 import Footer from "./Footer"
-// import Logo from "./Logo"
-// import Input from "./Input"
-// import Button from "./Button"
 
 export default function Today() {
     const navigate = useNavigate()
@@ -20,7 +19,16 @@ export default function Today() {
     const {loginResponse} = userInfo
     const {token} = loginResponse
     const [todayHabits, setTodayHabits] = useState([])
-    const customParseFormat = require('dayjs/plugin/customParseFormat')
+    const [concludedHabits, setConcludedHabits] = useState([])
+    const [habitsPercentage, setHabitsPercentage] = useState(0)
+
+    
+    useEffect(()=>{
+        let habitsPercentageValue = Math.round((concludedHabits.length / todayHabits.length) * 100)
+        setHabitsPercentage(habitsPercentageValue)
+
+    },[concludedHabits])
+
 
 
     useEffect(()=>{
@@ -32,52 +40,93 @@ export default function Today() {
         })
 
         request.then((response)=>{
-            setTodayHabits([response.data])
+            setTodayHabits([...response.data])
         })
     }, [])
 
     return(
-        <TodayPage>
-            <Header />
-            <HandleDate />
-            <HandleTodaysHabits response = {todayHabits} />
-            <Footer />
-        </TodayPage>
+        <ProgressContext.Provider value={{
+            todayHabits, 
+            setTodayHabits, 
+            concludedHabits, 
+            setConcludedHabits, 
+            habitsPercentage, 
+            setHabitsPercentage
+        }}>
+            <TodayPage>
+                <Header />
+                <PageContainer>
+                    <HandleDate />
+                    <ListOfHabitsContainer>
+                        <HandleTodaysHabits todayHabits = {todayHabits} />
+                    </ListOfHabitsContainer>
+                </PageContainer>
+                <Footer />
+            </TodayPage>
+        </ProgressContext.Provider>
     )
 }
 
-
-
-
-
 function HandleTodaysHabits(props){
-    const {response} = props
+    const {setTodayHabits, concludedHabits, setConcludedHabits, habitsPercentage, setHabitsPercentage} = useContext(ProgressContext)
+    let {todayHabits} = props
     
-    if(response !== undefined){
+    if(todayHabits.length === 0){
         return (
             <>
-            <h1>Você não tem hábitos programados pra hoje :(</h1>
+                <h1>Você não tem hábitos programados pra hoje :(</h1>
             </>
         )
     } else {
-        console.log("Entrou nessa porra de else do caralho")
         return (
             <>
+                {todayHabits.map(habit=>{
+                    return (
+                        <HabitContainer key = {habit.name + habit.id}>
+                            <FlexContainer>
+                                <Info>
+                                    <span>{habit.name}</span>
+                                    <p>Sequência atual: {habit.currentSequence}</p>
+                                    <p>Seu recorde: {habit.highestSequence}</p>
+                                </Info>
+                                <CheckHabit onClick={()=>{
+                                    finishHabit(habit)
+                                }} >
+                                    <BsCheckLg fontSize={34} color={"#fff"} />
+                                </CheckHabit>
+                            </FlexContainer>
+                        </HabitContainer>   
+                    )
+                })}
             </>
         )
     }
+
+    function finishHabit(habit) {
+        if(concludedHabits.indexOf(habit.id) === -1) {
+            setConcludedHabits([...concludedHabits, habit.id])  
+        } else {
+            const indexToBeRemoved = concludedHabits.indexOf(habit.id)
+            let concludedHabitsClone = concludedHabits
+            concludedHabitsClone.splice(indexToBeRemoved, 1)
+            setConcludedHabits([...concludedHabitsClone])
+        }
+         
+    }
+    
 
 }
 
 
 function HandleDate() {
+    const {habitsPercentage} = useContext(ProgressContext)
     let month = dayjs().get('month') // start 0
     month ++
 
     if(month < 10) {
         month = `0${month}`
     }
-    
+
     let weekDay = dayjs().get('day')
 
     switch(weekDay){
@@ -112,19 +161,121 @@ function HandleDate() {
 
     let date = dayjs().get('date')
 
-    let dateObject = {month, weekDay, date}
+    if(date < 10) {
+        date = `0${date}`
+    }
 
-    return (
-        <p>{weekDay}, {date}/{month}</p>
-    )
+    if (habitsPercentage === 0 || isNaN(habitsPercentage) ){
+        return (
+            <Date>
+                <p>{weekDay}, {date}/{month}</p>
+                <HabitsResume color = {"#BABABA"}>Nenhum hábito concluído ainda</HabitsResume>
+            </Date>
+        )
+    } else {
+        return (
+            <Date>
+                <p>{weekDay}, {date}/{month}</p>
+                <HabitsResume color = {"#8FC549"}>{habitsPercentage}% dos hábitos concluídos</HabitsResume>
+            </Date>
+        )
+    }
+
+
 }
+
+
+
+
+/* ----------------- STYLES ----------------- */
+
+
 
 const TodayPage = styled.section`
     width: 100%;
     height: calc(100vh - 140px);
-    height: fit-content;
-    background-color: #ccc;
-
+    background-color: #E5E5E5;
+    display: flex;
+    justify-content: center;
+    overflow-y: scroll;
 `
 
+const PageContainer = styled.div`
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+`
+const Date = styled.div`
+    margin-bottom: 28px;
+    p:first-child {
+        color: #126BA5;
+        font-weight: 400;
+        font-size: 22.976px;
+        line-height: 29px;
+    }
+
+`
+const HabitsResume = styled.p`
+    color: ${props=>props.color};
+    font-weight: 400;
+    font-size: 17.976px;
+    line-height: 22px;
+`
+
+const ListOfHabitsContainer = styled.ul`
+    margin-top: 20px;
+    width: 100%;
+`
+
+const HabitContainer = styled.li`
+    width: 100%;
+    border-radius: 5px;
+    background-color: #FFF;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    position: relative;
+`
+
+const FlexContainer = styled.div`
+    width: 90%;
+    margin: 13px 0px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+`
+
+const Info = styled.div`
+    flex: 1;
+    span {
+        display: block;
+        color: #666666;
+        font-style: normal;
+        font-weight: 400;
+        font-size: 19.976px;
+        line-height: 25px;
+        word-wrap: break-word;
+        word-break: break-word;
+        margin-bottom: 7px;
+    }
+
+    p {
+        color: #666666;
+        font-weight: 400;
+        font-size: 12.976px;
+        line-height: 16px;
+        margin-top: 3px;
+    }
+`
+
+const CheckHabit = styled.button`
+    width: 69px;
+    height: 69px;
+    background: #EBEBEB;
+    border: 1px solid #E7E7E7;
+    border-radius: 5px;
+    margin-left: 35px;
+`
 

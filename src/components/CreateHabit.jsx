@@ -2,7 +2,7 @@ import styled from "styled-components"
 import {useState, useContext} from "react"
 import axios from 'axios'
 
-import HabitsContext from "../context/HabitsContex"
+import HabitsContext from "../context/HabitsContext"
 
 function CreateHabit() {
     const {

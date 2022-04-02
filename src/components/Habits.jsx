@@ -4,7 +4,7 @@ import {useState, useContext, useEffect} from "react"
 import axios from 'axios'
 
 import UserContext from "../context/UserContext"
-import HabitsContext from "../context/HabitsContex"
+import HabitsContext from "../context/HabitsContext"
 import "../assets/styles/style.css" //importing general CSS file
 
 import Header from "./Header"
@@ -94,7 +94,6 @@ const HabitsContainer = styled.div`
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
-
 `
 
 const Top = styled.div`
