@@ -15,12 +15,12 @@ import Footer from "./Footer"
 
 export default function Today() {
     const navigate = useNavigate()
-    const {userInfo, setUserInfo} = useContext(UserContext)
+    const {userInfo, setUserInfo, habitsPercentage, setHabitsPercentage} = useContext(UserContext)
     const {loginResponse} = userInfo
     const {token} = loginResponse
     const [todayHabits, setTodayHabits] = useState([])
     const [concludedHabits, setConcludedHabits] = useState([])
-    const [habitsPercentage, setHabitsPercentage] = useState(0)
+    // const [habitsPercentage, setHabitsPercentage] = useState(0)
     const [renderControl, setRendercontrol] = useState([])
     
     useEffect(()=>{
@@ -28,10 +28,6 @@ export default function Today() {
         setHabitsPercentage(habitsPercentageValue)
 
     },[concludedHabits])
-
-    console.log(todayHabits)
-    console.log(concludedHabits)
-
     
     useEffect(()=>{
         const URL = "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/today"

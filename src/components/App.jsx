@@ -14,11 +14,12 @@ import { BrowserRouter, Routes, Route } from "react-router-dom"
 
 export default function App() {
     const [userInfo, setUserInfo] = useState({isSigningUp: false, email:"", name: "", image: "", password:""})
+    const [habitsPercentage, setHabitsPercentage] = useState(0)
     // const [userResponseData, setUserResponseData] = useState({})
     const [buttonActive, setButtonActive] = useState(true)
 
     return (
-        <UserContext.Provider value = {{userInfo, setUserInfo, buttonActive, setButtonActive}}>
+        <UserContext.Provider value = {{userInfo, setUserInfo, buttonActive, setButtonActive, habitsPercentage, setHabitsPercentage}}>
             <Main > 
                 <BrowserRouter>
                     <Routes>

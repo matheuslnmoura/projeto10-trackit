@@ -4,24 +4,43 @@ import { useState, useContext } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import axios from 'axios'
 import { ThreeDots } from  'react-loader-spinner'
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar'
+import 'react-circular-progressbar/dist/styles.css'
 
 import UserContext from "../context/UserContext"
 
 
 function Footer(){
-    const {userInfo, setUserInfo, buttonActive, setButtonActive} = useContext(UserContext)
+    const {habitsPercentage} = useContext(UserContext)
+
+    function ProgressButton() {
+        return(
+            <ProgressBar>
+                <CircularProgressbar 
+                    value = {habitsPercentage} 
+                    text = {"Hoje"} 
+                    styles={buildStyles({
+                        pathColor: "#fff",
+                        textColor: '#fff',
+                        trailColor: 'transparent'
+                    })}
+                />
+            </ProgressBar>
+        )
+    }
 
     return(
         <FooterContainer>
             <FlexContainer >
                 <Link to="/habitos"><span>Hábitos</span></Link>
-                <Link to="/hoje"><div>Hoje</div></Link>
+                <Link to="/hoje"><ProgressButton /></Link>
                 <Link to="/historico"><span>Histórico</span></Link>
             </FlexContainer>
 
         </FooterContainer>
     )
 }
+
 
 const FooterContainer = styled.footer`
     width: 100%;
@@ -40,11 +59,22 @@ const FlexContainer = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
+    position: relative;
 
     a {
         text-decoration: none;
         color: var(--button-color)
     }
+`
+
+const ProgressBar = styled.div`
+    width: 91px;
+    height: 91px;
+    padding: 5px;
+    position: relative;
+    bottom: 20px;
+    background-color: var(--button-color);
+    border-radius: 50%;
 `
 
 export default Footer
