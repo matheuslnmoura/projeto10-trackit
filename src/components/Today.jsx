@@ -21,7 +21,7 @@ export default function Today() {
     const [todayHabits, setTodayHabits] = useState([])
     const [concludedHabits, setConcludedHabits] = useState([])
     const [habitsPercentage, setHabitsPercentage] = useState(0)
-
+    const [renderControl, setRendercontrol] = useState([])
     
     useEffect(()=>{
         let habitsPercentageValue = Math.round((concludedHabits.length / todayHabits.length) * 100)
@@ -29,8 +29,10 @@ export default function Today() {
 
     },[concludedHabits])
 
+    console.log(todayHabits)
+    console.log(concludedHabits)
 
-
+    
     useEffect(()=>{
         const URL = "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/today"
         const request = axios.get(URL, {
@@ -42,7 +44,7 @@ export default function Today() {
         request.then((response)=>{
             setTodayHabits([...response.data])
         })
-    }, [])
+    }, [renderControl])
 
     return(
         <ProgressContext.Provider value={{
@@ -51,7 +53,9 @@ export default function Today() {
             concludedHabits, 
             setConcludedHabits, 
             habitsPercentage, 
-            setHabitsPercentage
+            setHabitsPercentage,
+            token,
+            setRendercontrol
         }}>
             <TodayPage>
                 <Header />
@@ -68,8 +72,19 @@ export default function Today() {
 }
 
 function HandleTodaysHabits(props){
-    const {setTodayHabits, concludedHabits, setConcludedHabits, habitsPercentage, setHabitsPercentage} = useContext(ProgressContext)
+    const {setTodayHabits, concludedHabits, setConcludedHabits, habitsPercentage, setHabitsPercentage, token, setRendercontrol} = useContext(ProgressContext)
     let {todayHabits} = props
+
+    useEffect(()=>{
+        const idsControlArr = []
+        todayHabits.forEach(habit=>{
+            if(habit.done === true ) {
+                idsControlArr.push(habit.id)
+            }  
+        })
+        setConcludedHabits([...idsControlArr])
+    },[todayHabits])
+
     
     if(todayHabits.length === 0){
         return (
@@ -78,9 +93,12 @@ function HandleTodaysHabits(props){
             </>
         )
     } else {
+
         return (
             <>
                 {todayHabits.map(habit=>{
+                    let buttonColor = "#EBEBEB"
+                    habit.done ? buttonColor = "#8FC549" : buttonColor = buttonColor
                     return (
                         <HabitContainer key = {habit.name + habit.id}>
                             <FlexContainer>
@@ -90,8 +108,8 @@ function HandleTodaysHabits(props){
                                     <p>Seu recorde: {habit.highestSequence}</p>
                                 </Info>
                                 <CheckHabit onClick={()=>{
-                                    finishHabit(habit)
-                                }} >
+                                    toggleHabitStatus(habit, token, todayHabits)
+                                }} buttonColor = {buttonColor} >
                                     <BsCheckLg fontSize={34} color={"#fff"} />
                                 </CheckHabit>
                             </FlexContainer>
@@ -102,16 +120,31 @@ function HandleTodaysHabits(props){
         )
     }
 
-    function finishHabit(habit) {
+    function toggleHabitStatus(habit, token, todayHabits) {
         if(concludedHabits.indexOf(habit.id) === -1) {
-            setConcludedHabits([...concludedHabits, habit.id])  
+            changeHabitStatus(habit, token, "check")
         } else {
-            const indexToBeRemoved = concludedHabits.indexOf(habit.id)
-            let concludedHabitsClone = concludedHabits
-            concludedHabitsClone.splice(indexToBeRemoved, 1)
-            setConcludedHabits([...concludedHabitsClone])
+            changeHabitStatus(habit, token, "uncheck")
         }
          
+    }
+
+    function changeHabitStatus(habit, token, action) {
+        const URL = `https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${habit.id}/${action}`
+        const request = axios.post(URL, {}, {
+            headers:{
+                Authorization: `Bearer ${token}`
+            }
+        })
+
+        request.then(()=>{
+            setRendercontrol([])
+        })
+
+        request.catch((error)=>{
+            const statusCode = error.response.status
+            alert("Algo deu errado. Tente novamente")
+        })
     }
     
 
@@ -119,7 +152,9 @@ function HandleTodaysHabits(props){
 
 
 function HandleDate() {
-    const {habitsPercentage} = useContext(ProgressContext)
+    const {concludedHabits, setConcludedHabits, todayHabits, habitsPercentage, setHabitsPercentage} = useContext(ProgressContext)
+
+
     let month = dayjs().get('month') // start 0
     month ++
 
@@ -273,7 +308,7 @@ const Info = styled.div`
 const CheckHabit = styled.button`
     width: 69px;
     height: 69px;
-    background: #EBEBEB;
+    background: ${props => props.buttonColor};
     border: 1px solid #E7E7E7;
     border-radius: 5px;
     margin-left: 35px;

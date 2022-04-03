@@ -29,7 +29,7 @@ const FooterContainer = styled.footer`
     position: fixed;
     bottom: 0;
     left: 0;
-    background-color: var(--main-color);
+    background-color: var(--white-color);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -41,6 +41,10 @@ const FlexContainer = styled.div`
     justify-content: space-between;
     align-items: center;
 
+    a {
+        text-decoration: none;
+        color: var(--button-color)
+    }
 `
 
 export default Footer
