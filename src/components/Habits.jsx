@@ -1,5 +1,4 @@
 import styled from "styled-components"
-import { Link } from "react-router-dom"
 import {useState, useContext, useEffect} from "react"
 import axios from 'axios'
 
@@ -17,7 +16,6 @@ import ListHabits from "./ListHabits"
 
 
 export default function Habits() {
-    const [callHabits, setCallHabits] = useState([])
     const [createHabitVisibility, setCreateHabitVisibility] = useState(false)
     const [listOfHabits, setListOfHabits] = useState([])
     const {userInfo, setUserInfo} = useContext(UserContext)
@@ -47,8 +45,7 @@ export default function Habits() {
                 userInfo, 
                 setUserInfo, 
                 loginResponse, 
-                token,
-                setCallHabits
+                token
             }}>
             <HabitsPage>
                 <Header />

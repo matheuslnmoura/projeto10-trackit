@@ -1,5 +1,5 @@
 import styled from "styled-components"
-import { useState, useContext } from "react";
+import { useContext } from "react";
 
 
 import "../assets/styles/style.css" //importing general CSS file
@@ -8,8 +8,8 @@ import UserContext from "../context/UserContext"
 
 export default function Input(props){
     const {type, id, placeholder, value} = props
-    const {userInfo, setUserInfo, inputButtonActive, setInputButtonActive} = useContext(UserContext)
-    const {isSigningUp, email, name, image, password} = userInfo
+    const {userInfo, setUserInfo, inputButtonActive} = useContext(UserContext)
+
     
     let inputOpacity = 1
 
@@ -41,6 +41,8 @@ export default function Input(props){
                     case "image":
                         setUserInfo({...userInfo, image: event.target.value})
                         break
+
+                    default:
                 }
 
             }} />

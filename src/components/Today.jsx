@@ -1,8 +1,6 @@
 import styled from "styled-components"
 import { useState, useEffect, useContext } from "react"
-import { Link, useNavigate } from "react-router-dom"
 import axios from 'axios'
-import { ThreeDots } from  'react-loader-spinner'
 import dayjs from 'dayjs'
 import {BsCheckLg} from 'react-icons/bs'
 
@@ -14,8 +12,7 @@ import Header from "./Header"
 import Footer from "./Footer"
 
 export default function Today() {
-    const navigate = useNavigate()
-    const {userInfo, setUserInfo, habitsPercentage, setHabitsPercentage} = useContext(UserContext)
+    const {userInfo, habitsPercentage, setHabitsPercentage} = useContext(UserContext)
     const {loginResponse} = userInfo
     const {token} = loginResponse
     const [todayHabits, setTodayHabits] = useState([])
@@ -68,7 +65,7 @@ export default function Today() {
 }
 
 function HandleTodaysHabits(props){
-    const {setTodayHabits, concludedHabits, setConcludedHabits, habitsPercentage, setHabitsPercentage, token, setRendercontrol} = useContext(ProgressContext)
+    const {concludedHabits, setConcludedHabits, token, setRendercontrol} = useContext(ProgressContext)
     let {todayHabits} = props
 
     useEffect(()=>{
@@ -96,7 +93,7 @@ function HandleTodaysHabits(props){
                 {todayHabits.map(habit=>{
                     let buttonColor = "#EBEBEB"
                     let sequencesColor = "#666666"
-                    habit.done ? buttonColor = "#8FC549" : buttonColor = buttonColor
+                    habit.done ? buttonColor = "#8FC549" : buttonColor = "#EBEBEB"
                     habit.currentSequence === habit.highestSequence && habit.currentSequence > 0 ? sequencesColor = "#8FC549" : sequencesColor = "#666666"
                     return (
                         <HabitContainer key = {habit.name + habit.id}>
@@ -141,7 +138,6 @@ function HandleTodaysHabits(props){
         })
 
         request.catch((error)=>{
-            const statusCode = error.response.status
             alert("Algo deu errado. Tente novamente")
         })
     }
@@ -151,7 +147,7 @@ function HandleTodaysHabits(props){
 
 
 function HandleDate() {
-    const {concludedHabits, setConcludedHabits, todayHabits, habitsPercentage, setHabitsPercentage} = useContext(ProgressContext)
+    const {habitsPercentage} = useContext(ProgressContext)
 
 
     let month = dayjs().get('month') // start 0
@@ -191,6 +187,7 @@ function HandleDate() {
             weekDay = "Sábado"
             break
                 
+        default:
     }
 
     let date = dayjs().get('date')

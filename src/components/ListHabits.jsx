@@ -12,17 +12,17 @@ function ListHabits(){
         setListOfHabits, 
         token,
         setCallHabits,
-        createHabitVisibility, 
-        setCreateHabitVisibility
     } = useContext(HabitsContext)
 
-    if(listOfHabits.length === 0 || listOfHabits === undefined) {
+    if(listOfHabits.length === 0) {
+        console.log(listOfHabits)
         return (
             <ListOfHabitsContainer >
                 <p>Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</p>
             </ListOfHabitsContainer>
         )
     } else {
+        console.log(listOfHabits)
         return(
             <ListOfHabitsContainer >
                 {listOfHabits.map((habit, index)=>{

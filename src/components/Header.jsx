@@ -1,17 +1,15 @@
 import styled from "styled-components"
 import "../assets/styles/style.css" //importing general CSS file
-import { useState, useContext } from "react"
-import { Link, useNavigate } from "react-router-dom"
-import axios from 'axios'
-import { ThreeDots } from  'react-loader-spinner'
+import { useContext } from "react"
+
 
 import UserContext from "../context/UserContext"
 
 
 function Header(){
-    const {userInfo, setUserInfo, buttonActive, setButtonActive} = useContext(UserContext)
+    const {userInfo} = useContext(UserContext)
     const {loginResponse} = userInfo
-    const {name, image} = loginResponse
+    const {image} = loginResponse
     return(
         <HeaderContainer>
             <FlexContainer image = {image}>

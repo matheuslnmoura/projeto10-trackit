@@ -11,7 +11,7 @@ export default function Button(props) {
     const navigate = useNavigate()
     const {buttonText, to, action} = props
     const {userInfo, setUserInfo, inputButtonActive, setInputButtonActive} = useContext(UserContext)
-    const {isSigningUp, email, name, image, password} = userInfo
+    const {email, name, image, password} = userInfo
     const [buttonStyle, setButtonStyle] = useState({content: buttonText, opacity: 1})
 
     function handleButtonStatus() {

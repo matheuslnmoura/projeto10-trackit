@@ -12,9 +12,6 @@ function CreateHabit() {
         setCreateHabitVisibility, 
         listOfHabits, 
         setListOfHabits, 
-        userInfo, 
-        setUserInfo, 
-        loginResponse, 
         token,
     } = useContext(HabitsContext)
 
@@ -153,10 +150,6 @@ function registerHabit(token, habitInfo, setHabitInfo, createHabitVisibility, se
         })
 
     }
-}
-
-function clearHabit(habitInfo, setHabitInfo) {
-    setHabitInfo({habitName: "", habitDays: []})
 }
 
 
