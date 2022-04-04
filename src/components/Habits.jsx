@@ -24,7 +24,6 @@ export default function Habits() {
     const {loginResponse} = userInfo
     const {token} = loginResponse
 
-    console.log("chamou Habits")
 
     useEffect(()=>{
         const URL = "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits"

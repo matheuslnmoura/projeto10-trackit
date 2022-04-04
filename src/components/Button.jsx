@@ -10,16 +10,16 @@ import UserContext from "../context/UserContext"
 export default function Button(props) {
     const navigate = useNavigate()
     const {buttonText, to, action} = props
-    const {userInfo, setUserInfo, buttonActive, setButtonActive} = useContext(UserContext)
+    const {userInfo, setUserInfo, inputButtonActive, setInputButtonActive} = useContext(UserContext)
     const {isSigningUp, email, name, image, password} = userInfo
     const [buttonStyle, setButtonStyle] = useState({content: buttonText, opacity: 1})
 
     function handleButtonStatus() {
-        if(buttonActive === true) {
-            setButtonActive(false)
+        if(inputButtonActive === "") {
+            setInputButtonActive("disabled")
             setButtonStyle({content: <ThreeDots color="#fff" height={40} width={40} />, opacity: 0.7})
         } else {
-            setButtonActive(true)
+            setInputButtonActive("")
             setButtonStyle({content: buttonText, opacity: 1})
         }
     }
@@ -76,6 +76,8 @@ export default function Button(props) {
             const request = axios.post(URL, signUpObject)
             request.then((response)=>{
                 navigate(to)
+                setInputButtonActive("")
+                setButtonStyle({content: buttonText, opacity: 1})
             })
             request.catch((error)=>{
                 alert(error.response.data.message)

@@ -1,5 +1,5 @@
 import styled from "styled-components"
-import { useContext } from "react";
+import { useState, useContext } from "react";
 
 
 import "../assets/styles/style.css" //importing general CSS file
@@ -8,15 +8,22 @@ import UserContext from "../context/UserContext"
 
 export default function Input(props){
     const {type, id, placeholder, value} = props
-    const {userInfo, setUserInfo} = useContext(UserContext)
+    const {userInfo, setUserInfo, inputButtonActive, setInputButtonActive} = useContext(UserContext)
     const {isSigningUp, email, name, image, password} = userInfo
+    
+    let inputOpacity = 1
+
+    if (inputButtonActive === "disabled") {
+        inputOpacity = 0.7
+    }
 
     return(
-        <InputsContainer>
+        <InputsContainer opacity = {inputOpacity}>
             <input type={type} 
             placeholder = {placeholder} 
             id = {id} 
             value = {value}
+            disabled = {inputButtonActive}
             onChange={(event)=>{
                 switch(id){
                     case "email":
@@ -56,6 +63,7 @@ const InputsContainer = styled.div`
         box-sizing: border-box;
         border-radius: 5px;
         margin-bottom: 10px;
+        opacity: ${props=>props.opacity}
     }
     
     input:focus{

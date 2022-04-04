@@ -16,10 +16,10 @@ export default function App() {
     const [userInfo, setUserInfo] = useState({isSigningUp: false, email:"", name: "", image: "", password:""})
     const [habitsPercentage, setHabitsPercentage] = useState(0)
     // const [userResponseData, setUserResponseData] = useState({})
-    const [buttonActive, setButtonActive] = useState(true)
+    const [inputButtonActive, setInputButtonActive] = useState("")
 
     return (
-        <UserContext.Provider value = {{userInfo, setUserInfo, buttonActive, setButtonActive, habitsPercentage, setHabitsPercentage}}>
+        <UserContext.Provider value = {{userInfo, setUserInfo, inputButtonActive, setInputButtonActive, habitsPercentage, setHabitsPercentage}}>
             <Main > 
                 <BrowserRouter>
                     <Routes>

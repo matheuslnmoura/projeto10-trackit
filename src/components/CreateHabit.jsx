@@ -1,8 +1,10 @@
 import styled from "styled-components"
-import {useState, useContext} from "react"
+import {useState, useContext, useEffect} from "react"
 import axios from 'axios'
+import { ThreeDots } from  'react-loader-spinner'
 
 import HabitsContext from "../context/HabitsContext"
+import UserContext from "../context/UserContext"
 
 function CreateHabit() {
     const {
@@ -13,12 +15,20 @@ function CreateHabit() {
         userInfo, 
         setUserInfo, 
         loginResponse, 
-        token
+        token,
     } = useContext(HabitsContext)
 
+    const {inputButtonActive, setInputButtonActive} = useContext(UserContext)
     const daysOfWeek = ["D", "S", "T", "Q", "Q", "S", "S"]
     const [habitInfo, setHabitInfo] = useState({habitName: "", habitDays: []})
-    const{habitName, habitDays} = habitInfo
+    const [buttonStyle, setButtonStyle] = useState({content: "Salvar", opacity: 1})
+    const {habitName, habitDays} = habitInfo
+
+    useEffect(()=>{
+        setInputButtonActive("")
+    }, [])
+
+
 
     if (createHabitVisibility === false) {
         return (
@@ -28,8 +38,8 @@ function CreateHabit() {
     } else {
         return(
             <CreateHabitContainer>
-                <FlexContainer>
-                    <input value = {habitName} placeholder="nome do hábito" onChange = {(event)=>{
+                <FlexContainer opacity = {buttonStyle.opacity}>
+                    <input value = {habitName} placeholder="nome do hábito" disabled = {inputButtonActive} onChange = {(event)=>{
                         let inputValue = "" 
                         inputValue += event.target.value
                         setHabitInfo({...habitInfo, habitName: inputValue})
@@ -45,6 +55,7 @@ function CreateHabit() {
                                 background= {"#FFFFFF"}
                                 border =  {"1px solid #D5D5D5"}
                                 color = {"#D4D4D4"}
+                                inputButtonActive = {inputButtonActive}
                                 />
                             } else {
                                 return <Day 
@@ -55,19 +66,20 @@ function CreateHabit() {
                                 background= {"#CFCFCF"}
                                 border =  {"1px solid #CFCFCF"}
                                 color = {"#FFFFFF"}
+                                inputButtonActive = {inputButtonActive}
                                 />
                             }
 
                         })}
                     </DaysContainer>
-                    <ButtonsContainer>
+                    <ButtonsContainer opacity = {buttonStyle.opacity}>
                         <button onClick={()=>{
                             setCreateHabitVisibility(!createHabitVisibility)
                         }}>Cancelar
                         </button>
                         <button onClick={()=>{
-                            registerHabit(token, habitInfo, setHabitInfo, createHabitVisibility, setCreateHabitVisibility, listOfHabits, setListOfHabits)
-                        }}>Salvar</button>
+                            registerHabit(token, habitInfo, setHabitInfo, createHabitVisibility, setCreateHabitVisibility, listOfHabits, setListOfHabits, setButtonStyle, setInputButtonActive)
+                        }}>{buttonStyle.content}</button>
                     </ButtonsContainer>
                 </FlexContainer>
             </CreateHabitContainer>
@@ -77,11 +89,11 @@ function CreateHabit() {
 
 
 function Day(props) {
-    const {day, index, habitInfo, setHabitInfo, background, border, color} = props
+    const {day, index, habitInfo, setHabitInfo, background, border, color, inputButtonActive} = props
     const {habitDays} = habitInfo
 
     return(
-        <DayContainer key={`${day} ${index}`} onClick={()=>{
+        <DayContainer key={`${day} ${index}`} disabled = {inputButtonActive} onClick={()=>{
             if(habitDays.indexOf(index) === -1){
 
                 setHabitInfo({...habitInfo, habitDays: [...habitDays, index]})
@@ -101,8 +113,12 @@ function Day(props) {
 
 
 
-function registerHabit(token, habitInfo, setHabitInfo, createHabitVisibility, setCreateHabitVisibility, listOfHabits, setListOfHabits) {
+function registerHabit(token, habitInfo, setHabitInfo, createHabitVisibility, setCreateHabitVisibility, listOfHabits, setListOfHabits, setButtonStyle, setInputButtonActive) {
     const{habitName, habitDays} = habitInfo
+
+    setInputButtonActive("disabled")
+    setButtonStyle({content: <ThreeDots color="#fff" height={40} width={40} />, opacity: 0.7})
+
     if(habitName.length === 0){
         alert("Dê um nome a seu hábito")
     } else if(habitDays.length === 0 ) {
@@ -124,7 +140,8 @@ function registerHabit(token, habitInfo, setHabitInfo, createHabitVisibility, se
             setHabitInfo({habitName: "", habitDays: []})
             setCreateHabitVisibility(!createHabitVisibility)
             setListOfHabits([...listOfHabits, response.data])
-
+            setButtonStyle({content: "Salvar", opacity: 1})
+            setInputButtonActive("")
         })
 
         request.catch(()=>{
@@ -169,6 +186,7 @@ const FlexContainer = styled.div`
         border-radius: 5px;
         margin-top: 18px;
         padding-left: 11px;
+        opacity: ${props=>props.opacity}
     }
 
     input:focus{
@@ -199,7 +217,7 @@ const DaysContainer = styled.div`
     justify-content: space-between;
 
 `
-const DayContainer = styled.div`
+const DayContainer = styled.button`
     width: 30px;
     height: 30px;
     background: ${props=>props.background};
@@ -237,6 +255,10 @@ const ButtonsContainer = styled.div`
         border:none;
         border-radius: 5px;
         margin-left: 10px;
+        opacity: ${props=>props.opacity};
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 `
 
