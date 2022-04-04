@@ -26,13 +26,14 @@ function Header(){
 
 const HeaderContainer = styled.header `
     width: 100%;
+    max-width: 450px;
     height: 70px;
     background-color: var(--main-color);
     display: flex;
     justify-content: center;
     align-items: center;
     position: fixed;
-    left: 0;
+    left: auto;
     top: 0;
 
 `

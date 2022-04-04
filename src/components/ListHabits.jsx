@@ -11,7 +11,9 @@ function ListHabits(){
         listOfHabits, 
         setListOfHabits, 
         token,
-        setCallHabits
+        setCallHabits,
+        createHabitVisibility, 
+        setCreateHabitVisibility
     } = useContext(HabitsContext)
 
     if(listOfHabits.length === 0 || listOfHabits === undefined) {

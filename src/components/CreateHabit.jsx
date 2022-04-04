@@ -62,7 +62,7 @@ function CreateHabit() {
                     </DaysContainer>
                     <ButtonsContainer>
                         <button onClick={()=>{
-                            clearHabit(habitInfo, setHabitInfo)
+                            setCreateHabitVisibility(!createHabitVisibility)
                         }}>Cancelar
                         </button>
                         <button onClick={()=>{

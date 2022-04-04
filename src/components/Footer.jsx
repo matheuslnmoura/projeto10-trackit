@@ -44,10 +44,11 @@ function Footer(){
 
 const FooterContainer = styled.footer`
     width: 100%;
+    max-width: 450px;
     height: 70px;
     position: fixed;
     bottom: 0;
-    left: 0;
+    left: auto;
     background-color: var(--white-color);
     display: flex;
     justify-content: center;
