@@ -83,6 +83,7 @@ function HandleTodaysHabits(props){
 
     
     if(todayHabits.length === 0){
+
         return (
             <>
                 <h1>Você não tem hábitos programados pra hoje :(</h1>
@@ -94,11 +95,13 @@ function HandleTodaysHabits(props){
             <>
                 {todayHabits.map(habit=>{
                     let buttonColor = "#EBEBEB"
+                    let sequencesColor = "#666666"
                     habit.done ? buttonColor = "#8FC549" : buttonColor = buttonColor
+                    habit.currentSequence === habit.highestSequence && habit.currentSequence > 0 ? sequencesColor = "#8FC549" : sequencesColor = "#666666"
                     return (
                         <HabitContainer key = {habit.name + habit.id}>
                             <FlexContainer>
-                                <Info>
+                                <Info color = {sequencesColor}>
                                     <span>{habit.name}</span>
                                     <p>Sequência atual: {habit.currentSequence}</p>
                                     <p>Seu recorde: {habit.highestSequence}</p>
@@ -293,7 +296,7 @@ const Info = styled.div`
     }
 
     p {
-        color: #666666;
+        color: ${props=>props.color};
         font-weight: 400;
         font-size: 12.976px;
         line-height: 16px;
